@@ -1,0 +1,31 @@
+[project]
+name = "flex-nano-vllm"
+version = "0.1.0"
+description = "Flex-attention based nano-vllm implementation for fast PaliGemma inference"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "accelerate>=1.9.0",
+    "datasets>=3.0.0",
+    "hf-transfer>=0.1.9",
+    "matplotlib>=3.10.3",
+    "torch>=2.7.1",
+    "tqdm>=4.67.1",
+    "transformers>=4.53.2",
+    "triton>=3.3.1",
+]
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["flex_nano_vllm"]
+
+[dependency-groups]
+dev = [
+    "rich>=14.1.0",
+]
+
+[tool.uv.sources]
+transformers = { git = "https://github.com/huggingface/transformers", rev = "34133d0a" }
