@@ -12,7 +12,7 @@ import numpy as np
 # Data
 configs = ['50% GPU', '90% GPU', '90% GPU\n(high batch)']
 vllm_output = [3020, 3772, 3840]
-flex_output = [2146, 2899, 3266]
+flex_output = [2313, 3076, 3440]
 
 # Create figure
 fig, ax = plt.subplots(figsize=(12, 8))
@@ -32,11 +32,17 @@ ax.legend(fontsize=12)
 ax.grid(axis='y', alpha=0.3)
 
 # Add value labels
-for bars in [bars1, bars2]:
-    for bar in bars:
-        height = bar.get_height()
-        ax.text(bar.get_x() + bar.get_width()/2., height + 50,
-                f'{int(height)}', ha='center', va='bottom', fontweight='bold', fontsize=11)
+for bar in bars1:
+    height = bar.get_height()
+    ax.text(bar.get_x() + bar.get_width()/2., height + 50,
+            f'{int(height)}', ha='center', va='bottom', fontweight='bold', fontsize=11)
+
+# Add value labels with percentages for flex-nano-vllm
+for i, bar in enumerate(bars2):
+    height = bar.get_height()
+    percentage = (flex_output[i] / vllm_output[i]) * 100
+    ax.text(bar.get_x() + bar.get_width()/2., height + 50,
+            f'{int(height)}\n({percentage:.1f}%)', ha='center', va='bottom', fontweight='bold', fontsize=11)
 
 plt.tight_layout()
 

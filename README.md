@@ -48,10 +48,10 @@ Test configuration:
 |---------------|----------------|-----------|------------------|
 | vLLM v1, 90% GPU memory, high batch size† | 3,840 | 17.67 | 7,234 | 
 | vLLM v1, 90% GPU memory | 3,772 | 15.26 | 6,401 | 
-| flex-nano-vllm, 90% GPU memory, high batch size† | 3,266 | 13.83 | 5,794 | 
-| flex-nano-vllm, 90% GPU memory | 2,899 | 13.05 | 5,262 | 
+| flex-nano-vllm, 90% GPU memory, high batch size† | 3,440 | 14.30 | 5,817 |
+| flex-nano-vllm, 90% GPU memory | 3,076 | 13.06 | 5,382 |
 | vLLM v1, 50% GPU memory | 3,020 | 13.74 | 5,448 | 
-| flex-nano-vllm, 50% GPU memory | 2,146 | 9.34 | 3,851 |
+| flex-nano-vllm, 50% GPU memory | 2,313 | 9.96 | 4,068 |
 
 *Total throughput includes both input and output tokens  
 † High batch size means max_num_seqs=512 in vllm (maximum allowed concurrency)

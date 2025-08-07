@@ -111,7 +111,7 @@ if __name__ == "__main__":
     max_seq_length = 2048
     max_input_length = 1024
     token_allocation = 45_360  # 50% memory usage, this number is derived by running uv run benchmark_vllm.py and checking the logs (on a 3090)
-    token_allocation = 140_432  # 100% memory usage, this number is derived by running uv run benchmark_vllm.py and checking the logs (on a 3090)
+    token_allocation = 140_432  # 90% memory usage, this number is derived by running uv run benchmark_vllm.py and checking the logs (on a 3090)
 
     prefill_length_limit = 1024 * 8  # helps control peak memory usage for prefill
 

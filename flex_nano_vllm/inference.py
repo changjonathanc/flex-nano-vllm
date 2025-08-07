@@ -37,7 +37,7 @@ def sample(logits_BV, greedy=True, to_cpu=False):
         logits = logits.to("cpu", non_blocking=True).view(B)
         probs = probs.to("cpu", non_blocking=True).view(B)
         torch.cuda.synchronize()
-    return indices, logits, probs
+    return indices.tolist(), logits.tolist(), probs.tolist()
 
 
 class Sequence:
@@ -54,26 +54,26 @@ class Sequence:
         self.inputs = None
 
     def add_next_token(self, token_id: torch.Tensor, logits: torch.Tensor, probs: torch.Tensor):
-        assert token_id.ndim == 0
-        assert logits.ndim == 0
-        self._output_ids.append(token_id.view(1))
-        self._output_logits.append(logits.view(1))
-        self._output_probs.append(probs.view(1))
+        #assert token_id.ndim == 0
+        #assert logits.ndim == 0
+        self._output_ids.append(token_id)
+        self._output_logits.append(logits)
+        self._output_probs.append(probs)
 
     def copy(self):
         return Sequence(self.text)
 
     @property
     def output_ids(self):
-        return torch.cat(self._output_ids, dim=0)
+        return torch.tensor(self._output_ids, dtype=torch.int64)
 
     @property
     def output_logits(self):
-        return torch.cat(self._output_logits, dim=0)
+        return torch.tensor(self._output_logits, dtype=torch.float32)
 
     @property
     def output_probs(self):
-        return torch.cat(self._output_probs, dim=0)
+        return torch.tensor(self._output_probs, dtype=torch.float32)
 
     @property
     def output_length(self):
@@ -112,6 +112,7 @@ class Inference:
 
         self.model = model
         self.tokenizer = tokenizer
+        self.eos_token_id = tokenizer.eos_token_id # cache this because it's not efficient to call tokenizer.eos_token_id every time
         self.device = model.device
         assert max_seq_length % page_size == 0, "max_seq_length must be divisible by page_size"
         self.max_seq_length = max_seq_length
@@ -285,7 +286,7 @@ class Inference:
 
     def _check_done(self, sequences: list[Sequence]):
         for seq in sequences:
-            is_eos = seq.last_token_id == self.tokenizer.eos_token_id
+            is_eos = seq.last_token_id == self.eos_token_id
             is_max_len = seq.input_length + seq.output_length >= self.max_seq_length
             is_max_new = seq.output_length == seq.params.max_new_tokens
             if is_eos or is_max_len or is_max_new:
@@ -346,9 +347,9 @@ class Inference:
 
         B = len(batch)
         # now we do decoding
-        batch_idx = torch.tensor([seq.batch_idx for seq in batch], device=self.device, dtype=torch.int64)
-        input_ids = torch.cat([seq.last_token_id for seq in batch], dim=0).view(-1).to(self.device, non_blocking=True)
-        input_pos = torch.tensor([seq.total_length - 1 for seq in batch], device=self.device, dtype=torch.int32).to(self.device, non_blocking=True)
+        batch_idx = torch.tensor([seq.batch_idx for seq in batch], dtype=torch.int64, pin_memory=True).to(self.device, non_blocking=True)
+        input_ids = torch.tensor([seq.last_token_id for seq in batch], dtype=torch.int64, pin_memory=True).to(self.device, non_blocking=True)
+        input_pos = torch.tensor([seq.total_length - 1 for seq in batch], dtype=torch.int32, pin_memory=True).to(self.device, non_blocking=True)
         self.counts.append(B)
         logits_BLV = self.decode_step(batch_idx, input_ids, input_pos)
         next_token, logits, probs = sample(logits_BLV[:, -1, :], to_cpu=True)
