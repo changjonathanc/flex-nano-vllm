@@ -107,7 +107,7 @@ if __name__ == "__main__":
     B = 8
     max_new_tokens = 8
     # settings to match vLLM (see benchmark_vllm.py)
-    paged_attn_max_batch_size = 512  # match vLLM max_num_seqs=256
+    paged_attn_max_batch_size = 256  # match vLLM max_num_seqs=256
     max_seq_length = 2048
     max_input_length = 1024
     token_allocation = 45_360  # 50% memory usage, this number is derived by running uv run benchmark_vllm.py and checking the logs (on a 3090)

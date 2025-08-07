@@ -12,6 +12,7 @@ This project has no flash-attn dependency, no custom triton kernel. Everything i
 flex-nano-vllm/
 ├── benchmark.py                   # Testing and benchmarking script.
 ├── benchmark_vllm.py              # vLLM comparison benchmark (uses uv inline dependency to run vLLM).
+├── visualize.py                   # Performance visualization script.
 └── flex_nano_vllm/
     ├── inference.py               # Main inference engine, uses paged attention.
     ├── modeling_gemma2.py         # Gemma2 model implementation, copied from transformers.
@@ -45,12 +46,17 @@ Test configuration:
 
 | Implementation | Output Tokens/s | Request/s | Total Throughput* |
 |---------------|----------------|-----------|------------------|
+| vLLM v1, 90% GPU memory, high batch size† | 3,840 | 17.67 | 7,234 | 
 | vLLM v1, 90% GPU memory | 3,772 | 15.26 | 6,401 | 
-| flex-nano-vllm, 90% GPU memory | 3,266 | 13.83 | 5,794 | 
+| flex-nano-vllm, 90% GPU memory, high batch size† | 3,266 | 13.83 | 5,794 | 
+| flex-nano-vllm, 90% GPU memory | 2,899 | 13.05 | 5,262 | 
 | vLLM v1, 50% GPU memory | 3,020 | 13.74 | 5,448 | 
 | flex-nano-vllm, 50% GPU memory | 2,146 | 9.34 | 3,851 |
 
 *Total throughput includes both input and output tokens  
+† High batch size means max_num_seqs=512 in vllm (maximum allowed concurrency)
+
+![Performance Comparison](tokens_per_second_comparison.png)
 
 ## License
 
