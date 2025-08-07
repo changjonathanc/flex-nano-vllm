@@ -68,6 +68,7 @@ ax4.grid(True, alpha=0.3)
 
 plt.tight_layout()
 plt.savefig('metrics_comparison.png', dpi=300, bbox_inches='tight')
+print("Metrics comparison saved as 'metrics_comparison.png'")
 plt.show()
 
 # Print some summary statistics
