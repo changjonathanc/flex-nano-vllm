@@ -17,9 +17,8 @@
 # 1. it can be used to benchmark vLLM's performance, run with isolated inline dependencies.
 # 2. outside of __main__, it contains utils for producing the same payload for benchmarking.
 
-from tqdm import tqdm
-from datasets import load_dataset
-import random
+import os
+import time
 from dataclasses import dataclass
 
 @dataclass
@@ -143,9 +142,6 @@ def generate_with_timing(llm, sequences, sampling_params, collect_detailed_metri
 
 
 if __name__ == "__main__":
-    import os
-    import time
-    
     os.environ["VLLM_TORCH_PROFILER_DIR"] = "./vllm_profile"
     os.environ['VLLM_USE_V1'] = '1'
     

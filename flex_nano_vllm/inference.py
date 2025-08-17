@@ -3,7 +3,6 @@ import time
 import torch
 from tqdm import tqdm
 from torch.nn.attention.flex_attention import BlockMask
-import torch.nn.attention.flex_attention
 import torch.nn.functional as F
 from rich.console import Console
 
@@ -305,7 +304,11 @@ class Inference:
         while (
             self.waiting
             and self.page_table.can_reserve(self.waiting[0].total_length)  # + self.waiting[0].params.max_new_tokens)
-            and (not batch or self.prefill_length_limit == -1 or prefill_length_sum + self.waiting[0].total_length < self.prefill_length_limit)
+            and (
+                not batch
+                or self.prefill_length_limit == -1
+                or prefill_length_sum + self.waiting[0].total_length < self.prefill_length_limit
+            )
         ):
             prefill_length_sum += self.waiting[0].total_length
 

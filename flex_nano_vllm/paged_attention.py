@@ -73,7 +73,7 @@ class PageTable:
         self.page_table[0, :] = 0  # page 0 is reserved for simpler code in assign_prefill_no_paging
         self.page_table_cpu = [[] for _ in range(max_batch_size)]
 
-        self.capacity = [0 for _ in range(max_batch_size)]  # capacity: batch_idx -> number of pages allocated * page size
+        self.capacity = torch.zeros(max_batch_size, dtype=torch.int64, device="cpu") # capacity: batch_idx -> number of pages allocated * page size
         self.free_pages = list(reversed(range(1, n_pages)))  # page 0 is reserved for simpler code in assign_prefill_no_paging
         self.free_batch_idx = list(reversed(range(1, max_batch_size)))  # batch_idx 0 is reserved for no-op
 
@@ -386,7 +386,7 @@ class PageTable:
         v_val: torch.Tensor,
         k_cache: torch.Tensor,
         v_cache: torch.Tensor,
-    ) -> None:
+    ) -> tuple[torch.Tensor, torch.Tensor]:
         """
         assigns kv and returns the original kv
 
