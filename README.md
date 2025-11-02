@@ -4,7 +4,7 @@ FlexAttention based, minimal vllm-style inference engine for fast Gemma 2 infere
 
 ## Introduction
 
-This project has no flash-attn dependency, no custom triton kernel. Everything is implemented with FlexAttention. The code is commented, the structure is flat. Stay tuned for a more detailed blog post.
+This project has no flash-attn dependency, no custom triton kernel. Everything is implemented with FlexAttention. The code is commented, the structure is flat. Read the accompanying write-up: [vLLM flex attention from scratch](https://jonathanc.net/blog/vllm-flex-attention-from-scratch).
 
 ## Code Structure
 
