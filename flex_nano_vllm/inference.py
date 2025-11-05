@@ -461,7 +461,7 @@ class Inference:
         )
         # in our code, the page table tensors are modified in-place, so we don't need to put them in graph vars
 
-    def print_time_stats(self, times):
+    def _calculate_time_stats(self, times: list[dict]) -> dict:
         stats = {}
         for step in ["decode", "prefill"]:
             step_times = [t["time"] for t in times if t["step_type"] == step]
@@ -472,13 +472,19 @@ class Inference:
                 "min": min(step_times) if step_times else 0,
                 "max": max(step_times) if step_times else 0,
             }
+        stats["total_time"] = sum(t['time'] for t in times)
+        return stats
 
+    def print_time_stats(self, times: list[dict]):
+        stats = self._calculate_time_stats(times)
         print("\nTime statistics by step type:")
         for step, metrics in stats.items():
+            if step == "total_time":
+                continue
             print(f"\n{step}:")
             print(f"  Count: {metrics['count']}")
             print(f"  Total: {metrics['total']:.4f}s")
             print(f"  Mean:  {metrics['mean']:.4f}s")
             print(f"  Min:   {metrics['min']:.4f}s")
             print(f"  Max:   {metrics['max']:.4f}s")
-        print(f"\nTotal time: {sum(t['time'] for t in times):.4f}s")
+        print(f"\nTotal time: {stats['total_time']:.4f}s")
