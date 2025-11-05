@@ -35,7 +35,7 @@ outputs = debug_print_outputs(sequences, tokenizer)
 
 from transformers import AutoTokenizer
 import time
-from flex_nano_vllm import Gemma2ForCausalLM
+from flex_nano_vllm import Gemma2ForCausalLM, Gemma3ForCausalLM
 from flex_nano_vllm.inference import Inference, Sequence, SamplingParams
 from benchmark_vllm import generate_benchmark_data, long_prompt, short_prompt
 
@@ -98,11 +98,15 @@ def debug_print_outputs(sequences, tokenizer, slice=slice(None), reference=None,
 
 if __name__ == "__main__":
     # Load model and tokenizer
-    model_id = "google/gemma-2-2b"
+    # model_id = "google/gemma-2-2b"
+    model_id = "google/gemma-3-270m"
     tokenizer = AutoTokenizer.from_pretrained(model_id)
 
-    model = Gemma2ForCausalLM.from_pretrained(model_id, torch_dtype=torch.bfloat16, device_map="auto").eval()
-    # model = torch.compile(model)
+    if "gemma-2" in model_id:
+        model = Gemma2ForCausalLM.from_pretrained(model_id, torch_dtype=torch.bfloat16, device_map="auto").eval()
+    elif "gemma-3" in model_id:
+        model = Gemma3ForCausalLM.from_pretrained(model_id, torch_dtype=torch.bfloat16, device_map="auto").eval()
+    model = torch.compile(model)
 
     B = 8
     max_new_tokens = 8
